@@ -1,18 +1,7 @@
 from openpyxl import Workbook
 import openpyxl
 import os
-
-lis_column = 'B'
-lis_ans = 'C'
-lis_ans_num = 'D'
-lis_start = 9
-lis_end = 15 #should + 1 compare to excel
-
-read_column = 'F'   
-read_ans = 'G'
-read_ans_num = 'H'
-read_start = 9
-read_end = 29 #should + 1 compare to excel
+from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
 
 def read_answer_from_txt(file):
     answers = []
@@ -55,11 +44,14 @@ def grade_lis_per_file(ws, answers):
     for user, answer in zip(user_answers, answers):
         if user == answer:
             ws[lis_ans_num+ str(rs_start)] = 1
+            ws[lis_ans_num+ str(rs_start)].alignment = Alignment(horizontal="center", vertical="center")
             sum += 1
         else:
             ws[lis_ans_num+ str(rs_start)] = 0
+            ws[lis_ans_num+ str(rs_start)].alignment = Alignment(horizontal="center", vertical="center")
         rs_start += 1
     ws[lis_ans_num + str(sum_row)] = sum
+    ws[lis_ans_num + str(sum_row)].alignment = Alignment(horizontal="center", vertical="center")
 
 def grade_read_per_file(ws, answers):
     global read_start
@@ -72,14 +64,29 @@ def grade_read_per_file(ws, answers):
     for user, answer in zip(user_answers, answers):
         if user == answer:
             ws[read_ans_num+ str(rs_start)] = 1
+            ws[read_ans_num+ str(rs_start)].alignment = Alignment(horizontal="center", vertical="center")
             sum += 1
         else:
             ws[read_ans_num+ str(rs_start)] = 0
+            ws[read_ans_num+ str(rs_start)].alignment = Alignment(horizontal="center", vertical="center")
         rs_start += 1
-    ws[read_ans_num + str(sum_row)] = sum * 0.25
+    ws[read_ans_num + str(sum_row)] = sum 
+    ws[read_ans_num + str(sum_row)].alignment = Alignment(horizontal="center", vertical="center")
 
 if __name__ == "__main__":
+    lis_column = 'B'
+    lis_ans = 'C'
+    lis_ans_num = 'D'
+    lis_start = 9
+    lis_end = 15 #should + 1 compare to excel
+
+    read_column = 'F'   
+    read_ans = 'G'
+    read_ans_num = 'H'
+    read_start = 9
+    read_end = 19 #should + 1 compare to excel
     files = os.listdir('hocsinh')
+
     for file in files:
         wb = openpyxl.load_workbook("/home/hieu/Desktop/grade/hocsinh/" + file)
         ws = wb.worksheets[0]
