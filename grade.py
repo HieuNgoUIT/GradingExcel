@@ -26,89 +26,47 @@ def read_user_value_from_excel(ws, cell, start, end):
         users_answers.append(value)
     return users_answers
 
-def write_answers(ws, cell, start,end, answers):
+def write_answers(ws, teacher_column, start,end, answers):
     status = 0
-    ws[cell + str(start-1)] = 'Đáp án GV'
+    ws[teacher_column + str(start-1)] = 'Đáp án GV'
     for i in range(start,end):
-        ws[cell + str(i)] = answers[status]
+        ws[teacher_column + str(i)] = answers[status]
         status += 1
 
-def grade_lis_per_file(ws, answers):
-    global lis_start
-    global lis_end
-    sum_row = lis_start-1
-    rs_start = lis_start
+def grade_per_file(ws, answers, student_column, total_column, row_start, row_end):
+    sum_row = row_start-1
+    count = row_start
 
-    user_answers = read_user_value_from_excel(ws,lis_column, lis_start, lis_end)
+    user_answers = read_user_value_from_excel(ws,student_column, row_start, row_end)
     sum = 0
     for user, answer in zip(user_answers, answers):
         if user == answer:
-            ws[lis_ans_num+ str(rs_start)] = 1
-            ws[lis_ans_num+ str(rs_start)].alignment = Alignment(horizontal="center", vertical="center")
+            ws[total_column+ str(count)] = 1
+            ws[total_column+ str(count)].alignment = Alignment(horizontal="center")
             sum += 1
         else:
-            ws[lis_ans_num+ str(rs_start)] = 0
-            ws[lis_ans_num+ str(rs_start)].alignment = Alignment(horizontal="center", vertical="center")
-        rs_start += 1
-    ws[lis_ans_num + str(sum_row)] = sum
-    ws[lis_ans_num + str(sum_row)].alignment = Alignment(horizontal="center", vertical="center")
+            ws[total_column+ str(count)] = 0
+            ws[total_column+ str(count)].alignment = Alignment(horizontal="center")
+        count += 1
+    ws[total_column + str(sum_row)] = sum 
+    ws[total_column + str(sum_row)].alignment = Alignment(horizontal="center")
 
-def grade_read_per_file(ws, answers):
-    global read_start
-    global read_end
-    sum_row = read_start-1
-    rs_start = read_start
-
-    user_answers = read_user_value_from_excel(ws,read_column, read_start, read_end)
-    sum = 0
-    for user, answer in zip(user_answers, answers):
-        if user == answer:
-            ws[read_ans_num+ str(rs_start)] = 1
-            ws[read_ans_num+ str(rs_start)].alignment = Alignment(horizontal="center", vertical="center")
-            sum += 1
-        else:
-            ws[read_ans_num+ str(rs_start)] = 0
-            ws[read_ans_num+ str(rs_start)].alignment = Alignment(horizontal="center", vertical="center")
-        rs_start += 1
-    ws[read_ans_num + str(sum_row)] = sum 
-    ws[read_ans_num + str(sum_row)].alignment = Alignment(horizontal="center", vertical="center")
-
-if __name__ == "__main__":
-    lis_column = 'B'
-    lis_ans = 'C'
-    lis_ans_num = 'D'
-    lis_start = 9
-    lis_end = 15 #should + 1 compare to excel
-
-    read_column = 'F'   
-    read_ans = 'G'
-    read_ans_num = 'H'
-    read_start = 9
-    read_end = 19 #should + 1 compare to excel
-    
-    x_read_column = 'F'   
-    x_read_ans = 'G'
-    x_read_ans_num = 'H'
-    x_read_start = 9
-    x_read_end = 19 #should + 1 compare to excel
-    
-    
+if __name__ == "__main__": 
     files = os.listdir('hocsinh')
-
     for file in files:
-        wb = openpyxl.load_workbook("/home/hieu/Desktop/grade/hocsinh/" + file)
+        wb = openpyxl.load_workbook("/home/hieu/GradingExcel/hocsinh/" + file)
         ws = wb.worksheets[0]
 
         lis_answer = read_answer_from_txt("lis.txt")
         read_answer = read_answer_from_txt("read.txt")
         x_read_answer = read_answer_from_txt("read2.txt")
 
-        write_answers(ws, lis_ans, lis_start, lis_end, lis_answer)
-        write_answers(ws, read_ans, read_start, read_end, read_answer)
-        write_answers(ws, x_read_ans, x_read_start, x_read_end, x_read_answer)
+        write_answers(ws, "C", 9, 15, lis_answer)
+        write_answers(ws, "G", 9, 19, read_answer)
+        write_answers(ws, "K", 9, 29, x_read_answer)
 
-        grade_lis_per_file(ws, lis_answer)
-        grade_read_per_file(ws, read_answer)
-        grade_read_per_file(ws, x_read_answer)
+        grade_per_file(ws, lis_answer, student_column="B", total_column="D", row_start=9 , row_end=15) #rowend should +1 due to excel
+        grade_per_file(ws, read_answer,  student_column="F", total_column="H", row_start=9 , row_end=19)
+        grade_per_file(ws, x_read_answer,  student_column="J", total_column="L", row_start=9 , row_end=29)
 
-        wb.save("/home/hieu/Desktop/grade/result/" + file)
+        wb.save("/home/hieu/GradingExcel/result/" + file)
