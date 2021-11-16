@@ -85,6 +85,14 @@ if __name__ == "__main__":
     read_ans_num = 'H'
     read_start = 9
     read_end = 19 #should + 1 compare to excel
+    
+    x_read_column = 'F'   
+    x_read_ans = 'G'
+    x_read_ans_num = 'H'
+    x_read_start = 9
+    x_read_end = 19 #should + 1 compare to excel
+    
+    
     files = os.listdir('hocsinh')
 
     for file in files:
@@ -93,11 +101,14 @@ if __name__ == "__main__":
 
         lis_answer = read_answer_from_txt("lis.txt")
         read_answer = read_answer_from_txt("read.txt")
+        x_read_answer = read_answer_from_txt("read2.txt")
 
         write_answers(ws, lis_ans, lis_start, lis_end, lis_answer)
         write_answers(ws, read_ans, read_start, read_end, read_answer)
+        write_answers(ws, x_read_ans, x_read_start, x_read_end, x_read_answer)
 
         grade_lis_per_file(ws, lis_answer)
         grade_read_per_file(ws, read_answer)
+        grade_read_per_file(ws, x_read_answer)
 
         wb.save("/home/hieu/Desktop/grade/result/" + file)
