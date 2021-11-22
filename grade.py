@@ -52,7 +52,7 @@ def grade_per_file(ws, answers, student_column, total_column, row_start, row_end
     ws[total_column + str(sum_row)].alignment = Alignment(horizontal="center")
 
 if __name__ == "__main__": 
-    pwd = "/home/hieu/Desktop/GradingExcel"
+    pwd = os.getcwd()
     part_ans = read_answer_from_txt(os.path.join(pwd, "answer.txt"))
     files = os.listdir(os.path.join(pwd, "hocsinh"))
     for file in files:
